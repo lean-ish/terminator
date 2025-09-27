@@ -52,7 +52,10 @@ public final class Terminator {
      * @throws InterruptedException if interrupted while waiting on a blocking service termination
      * @throws TerminationException if one or more services fail to terminate cleanly
      */
-    public void terminate() throws InterruptedException {
+    public void terminate()
+            throws InterruptedException {
+        checkInterrupted();
+
         List<NonBlockingTerminable> nonBlockingSnapshot;
         List<BlockingTerminable> blockingSnapshot;
         synchronized (monitor) {
@@ -76,7 +79,6 @@ public final class Terminator {
 
     private TerminationException terminateServices(List<? extends Terminable> snapshot, TerminationException failure)
             throws InterruptedException {
-
         checkInterrupted();
 
         ListIterator<? extends Terminable> iterator = snapshot.listIterator(snapshot.size());
@@ -110,7 +112,6 @@ public final class Terminator {
      */
     public boolean awaitTermination(Duration timeout)
             throws InterruptedException {
-
         Objects.requireNonNull(timeout, "timeout");
 
         checkInterrupted();
@@ -155,7 +156,8 @@ public final class Terminator {
         }
     }
 
-    private static void checkInterrupted() throws InterruptedException {
+    private static void checkInterrupted()
+            throws InterruptedException {
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedException("Termination interrupted");
         }

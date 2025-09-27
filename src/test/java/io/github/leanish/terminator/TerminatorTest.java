@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test;
 class TerminatorTest {
 
     @Test
-    void terminatesRegisteredServicesInReverseOrder() throws InterruptedException {
+    void terminatesRegisteredServicesInReverseOrder()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         List<Integer> order = Collections.synchronizedList(new ArrayList<>());
 
@@ -31,7 +32,8 @@ class TerminatorTest {
     }
 
     @Test
-    void blockingAndNonBlockingServicesCoordinate() throws InterruptedException {
+    void blockingAndNonBlockingServicesCoordinate()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         TrackingBlockingService blocking = new TrackingBlockingService(Duration.ofMillis(80));
         NonBlockingService nonBlocking = new NonBlockingService(Duration.ofMillis(150));
@@ -61,7 +63,8 @@ class TerminatorTest {
     }
 
     @Test
-    void negativeTimeoutTreatedAsZero() throws InterruptedException {
+    void negativeTimeoutTreatedAsZero()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         NonBlockingService nonBlocking = new NonBlockingService(Duration.ofMillis(150));
         terminator.register(nonBlocking);
@@ -79,7 +82,8 @@ class TerminatorTest {
     }
 
     @Test
-    void awaitTerminationReturnsTrueWhenOnlyBlockingServices() throws InterruptedException {
+    void awaitTerminationReturnsTrueWhenOnlyBlockingServices()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         terminator.register(new TrackingBlockingService(Duration.ZERO));
 
@@ -105,7 +109,8 @@ class TerminatorTest {
     }
 
     @Test
-    void terminatePropagatesInterruptions() throws InterruptedException {
+    void terminatePropagatesInterruptions()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         terminator.register(new SleepyBlockingService(Duration.ofSeconds(1)));
 
@@ -125,7 +130,8 @@ class TerminatorTest {
     }
 
     @Test
-    void awaitTerminationPropagatesInterruptions() throws InterruptedException {
+    void awaitTerminationPropagatesInterruptions()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         NonBlockingService nonBlocking = new NonBlockingService(Duration.ofSeconds(1));
         terminator.register(nonBlocking);
@@ -155,7 +161,8 @@ class TerminatorTest {
     }
 
     @Test
-    void terminateInvokedWhileAlreadyTerminatingReturnsImmediately() throws InterruptedException {
+    void terminateInvokedWhileAlreadyTerminatingReturnsImmediately()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         terminator.register(new SleepyBlockingService(Duration.ofMillis(100)));
 
@@ -176,7 +183,8 @@ class TerminatorTest {
     }
 
     @Test
-    void nonBlockingServicesSignalledBeforeBlockingOnTerminate() throws InterruptedException {
+    void nonBlockingServicesSignalledBeforeBlockingOnTerminate()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         List<String> order = Collections.synchronizedList(new ArrayList<>());
 
@@ -200,7 +208,8 @@ class TerminatorTest {
     }
 
     @Test
-    void registerAfterTerminationInitiatedFails() throws InterruptedException {
+    void registerAfterTerminationInitiatedFails()
+            throws InterruptedException {
         Terminator terminator = new Terminator();
         TrackingBlockingService blocking = new TrackingBlockingService(Duration.ZERO);
         terminator.register(blocking);
@@ -209,7 +218,8 @@ class TerminatorTest {
         assertThatThrownBy(() -> terminator.register(blocking)).isInstanceOf(IllegalStateException.class);
     }
 
-    private static void sleep(Duration duration) throws InterruptedException {
+    private static void sleep(Duration duration)
+            throws InterruptedException {
         if (duration.isZero()) {
             return;
         }
@@ -236,7 +246,8 @@ class TerminatorTest {
         }
 
         @Override
-        public void terminate() throws InterruptedException {
+        public void terminate()
+                throws InterruptedException {
             if (terminated.compareAndSet(false, true)) {
                 sleep(delay);
             }
@@ -250,7 +261,8 @@ class TerminatorTest {
     private record SleepyBlockingService(Duration delay) implements BlockingTerminable {
 
         @Override
-        public void terminate() throws InterruptedException {
+        public void terminate()
+                throws InterruptedException {
             sleep(delay);
         }
     }
@@ -294,7 +306,8 @@ class TerminatorTest {
         }
 
         @Override
-        public boolean awaitTermination(Duration timeout) throws InterruptedException {
+        public boolean awaitTermination(Duration timeout)
+                throws InterruptedException {
             Duration effective = timeout.isNegative() ? Duration.ZERO : timeout;
             long timeoutNanos = effective.toNanos();
             return latch.await(timeoutNanos, TimeUnit.NANOSECONDS);
