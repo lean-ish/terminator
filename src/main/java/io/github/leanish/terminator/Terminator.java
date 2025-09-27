@@ -21,13 +21,17 @@ public final class Terminator {
     /**
      * Registers a service to be terminated when {@link #terminate()} is invoked.
      *
-     * @param service the service to register
      * @throws IllegalStateException if termination has already been initiated
      */
     public void register(BlockingTerminable service) {
         registerService(service, blockingServices);
     }
 
+    /**
+     * Registers a service to be terminated when {@link #terminate()} is invoked.
+     *
+     * @throws IllegalStateException if termination has already been initiated
+     */
     public void register(NonBlockingTerminable service) {
         registerService(service, nonBlockingServices);
     }
@@ -143,7 +147,7 @@ public final class Terminator {
     }
 
     /**
-     * @return {@code true} if termination has been initiated
+     * Indicates if the termination has been initiated.
      */
     public boolean isTerminating() {
         synchronized (monitor) {
