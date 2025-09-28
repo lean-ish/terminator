@@ -28,38 +28,32 @@ dependencies {
 ### Implement services
 
 ```java
-final class HttpServer implements BlockingTerminable {
+class HttpServer implements BlockingTerminable {
     private final Server server;
 
-    HttpServer(Server server) {
-        this.server = server;
-    }
-
+    ...
+    
     @Override
-    public void terminate() throws InterruptedException {
+    public void terminate()
+            throws InterruptedException {
         server.stop(); // blocks until fully stopped
     }
 }
 
-final class MetricsReporter implements NonBlockingTerminable {
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final CountDownLatch shutdown = new CountDownLatch(1);
+class QueueProcessor implements NonBlockingTerminable {
+    private final ExecutorService executor;
+
+    ...
 
     @Override
     public void terminate() {
-        executor.submit(() -> {
-            try {
-                flushAndClose();
-            } finally {
-                shutdown.countDown();
-                executor.shutdown();
-            }
-        });
+        executor.shutdown(); // starts shutdown but returns immediately
     }
 
     @Override
-    public boolean awaitTermination(Duration timeout) throws InterruptedException {
-        return shutdown.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
+    public boolean awaitTermination(Duration timeout)
+            throws InterruptedException {
+        return executor.awaitTermination(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 }
 ```
@@ -68,15 +62,12 @@ final class MetricsReporter implements NonBlockingTerminable {
 
 ```java
 Terminator terminator = new Terminator();
-terminator.register(new HttpServer(server));
-terminator.register(new MetricsReporter());
+terminator.register(httpServer);
+terminator.register(queueProcessor);
 
-try {
-    terminator.terminate();
-} catch (InterruptedException e) {
-    Thread.currentThread().interrupt();
-}
+...
 
+terminator.terminate();
 boolean finished = terminator.awaitTermination(Duration.ofSeconds(5));
 if (!finished) {
     // log or trigger fallback action
