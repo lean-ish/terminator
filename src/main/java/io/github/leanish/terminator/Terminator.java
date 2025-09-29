@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 /**
  * Coordinates termination of multiple {@link Terminable} services.
  */
@@ -67,8 +69,7 @@ public final class Terminator {
             blockingSnapshot = new ArrayList<>(blockingServices);
         }
 
-        TerminationException failure = null;
-        failure = terminateServices(nonBlockingSnapshot, failure);
+        TerminationException failure = terminateServices(nonBlockingSnapshot, null);
         failure = terminateServices(blockingSnapshot, failure);
 
         checkInterrupted();
@@ -77,7 +78,8 @@ public final class Terminator {
         }
     }
 
-    private TerminationException terminateServices(List<? extends Terminable> snapshot, TerminationException failure)
+    @Nullable
+    private TerminationException terminateServices(List<? extends Terminable> snapshot, @Nullable TerminationException failure)
             throws InterruptedException {
         checkInterrupted();
 
