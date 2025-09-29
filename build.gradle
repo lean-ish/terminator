@@ -26,22 +26,49 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
 }
 
-test {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create('mavenJava', MavenPublication) {
             from components.java
+            pom {
+                name = 'Terminator'
+                description = 'Coordinates shutdown of blocking and non-blocking services.'
+                url = 'https://github.com/lean-ish/terminator'
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'lean-ish'
+                        name = 'Leandro Aguiar'
+                        url = 'https://github.com/lean-ish'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/lean-ish/terminator'
+                    connection = 'scm:git:https://github.com/lean-ish/terminator.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/lean-ish/terminator.git'
+                }
+            }
         }
     }
+
     repositories {
         mavenLocal()
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/lean-ish/terminator')
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
     }
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-

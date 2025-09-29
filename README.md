@@ -17,7 +17,7 @@ The coordinator makes sure non-blocking services are signalled first and waited 
 
 ## Quick start
 
-Add the dependency to your Gradle build (replace the version with the one you publish):
+Add the dependency to your Gradle build:
 
 ```groovy
 dependencies {
@@ -88,6 +88,10 @@ To regenerate the API documentation:
 ```bash
 ./gradlew javadoc
 ```
+
+## Change log
+
+See [CHANGELOG.md](CHANGELOG.md) for notable updates.
 
 ## Contributing
 
