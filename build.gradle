@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'com.diffplug.spotless' version '7.2.1'
 }
 
 group = 'io.github.leanish'
@@ -70,5 +71,14 @@ publishing {
                 password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
             }
         }
+    }
+}
+
+spotless {
+    java {
+        trimTrailingWhitespace()
+        endWithNewline()
+        removeUnusedImports()
+        licenseHeaderFile 'LICENSE_HEADER'
     }
 }
