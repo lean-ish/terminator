@@ -21,7 +21,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.leanish:nullability:0.1.0-SNAPSHOT'
+    compileOnly 'org.jspecify:jspecify:1.0.0'
+    testCompileOnly 'org.jspecify:jspecify:1.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
     testImplementation 'org.assertj:assertj-core:3.27.6'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
