@@ -21,7 +21,7 @@ Add the dependency to your Gradle build:
 
 ```groovy
 dependencies {
-    implementation 'io.github.leanish:terminator:0.1.0-SNAPSHOT'
+    implementation 'io.github.leanish:terminator:0.1.0'
 }
 ```
 

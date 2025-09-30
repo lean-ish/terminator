@@ -10,6 +10,12 @@ package io.github.leanish.terminator;
  */
 public class TerminationException extends RuntimeException {
 
+    /**
+     * Creates a new exception capturing termination failure details.
+     *
+     * @param message description of the failure
+     * @param cause first failure thrown by a terminating service
+     */
     public TerminationException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -26,8 +26,15 @@ public final class Terminator {
     private boolean terminating;
 
     /**
+     * Creates a new terminator with no registered services.
+     */
+    public Terminator() {
+    }
+
+    /**
      * Registers a service to be terminated when {@link #terminate()} is invoked.
      *
+     * @param service blocking service to register
      * @throws IllegalStateException if termination has already been initiated
      */
     public void register(BlockingTerminable service) {
@@ -37,6 +44,7 @@ public final class Terminator {
     /**
      * Registers a service to be terminated when {@link #terminate()} is invoked.
      *
+     * @param service non-blocking service to register
      * @throws IllegalStateException if termination has already been initiated
      */
     public void register(NonBlockingTerminable service) {
@@ -156,6 +164,8 @@ public final class Terminator {
 
     /**
      * Indicates if the termination has been initiated.
+     *
+     * @return {@code true} when termination has started, otherwise {@code false}
      */
     public boolean isTerminating() {
         synchronized (monitor) {

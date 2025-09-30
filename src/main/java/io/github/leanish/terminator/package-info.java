@@ -1,3 +1,6 @@
+/**
+ * Core termination coordination primitives.
+ */
 @NullMarked
 package io.github.leanish.terminator;
 
