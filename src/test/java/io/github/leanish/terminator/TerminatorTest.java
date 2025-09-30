@@ -125,6 +125,7 @@ class TerminatorTest {
                 Thread.sleep(50);
                 mainThread.interrupt();
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
             }
         });
         interrupter.start();
@@ -150,6 +151,7 @@ class TerminatorTest {
                     Thread.sleep(50);
                     mainThread.interrupt();
                 } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
                 }
             });
             interrupter.start();
@@ -175,12 +177,14 @@ class TerminatorTest {
             try {
                 terminator.terminate();
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
             }
         });
         shutdownThread.start();
 
+        //noinspection LoopConditionNotUpdatedInsideLoop // updated by shutdownThread
         while (!terminator.isTerminating()) {
-            Thread.yield();
+            Thread.onSpinWait();
         }
 
         terminator.terminate();
@@ -297,7 +301,7 @@ class TerminatorTest {
         @Override
         public void terminate() {
             if (terminateCalls.incrementAndGet() == 1) {
-                executor.submit(() -> {
+                executor.execute(() -> {
                     try {
                         sleep(shutdownDelay);
                     } catch (InterruptedException e) {
